@@ -9,7 +9,7 @@ years: A list of years (integers) for which MVP data needs to be
     scraped.
 """
 years = [year for year in range(1991, 2023)]
-
+mvp_voting_tables = {}
 
 def make_request(url):
     """
@@ -76,7 +76,7 @@ def initialize_yearly_mvp_data():
                 f.write(response.text)
         except FileExistsError:
             # If the file already exists, we can simply continue
-            pass
+            continue
 
 
 def get_yearly_mvp_voting_tables():
@@ -86,8 +86,10 @@ def get_yearly_mvp_voting_tables():
     :return: a dictionary of year (str) : voting table (str)
     """
     # Initialize a dict to hold mvp voting tables
-    mvp_voting_tables = {}
     for year in years:
+        # If we have already initialzied the table, continue
+        if str(year) in mvp_voting_tables:
+            continue
         file_path = 'src/yearly_mvp_data/{}.html'.format(year)
         with open(file_path, 'r', encoding='utf-8') as f:
             page = f.read()
