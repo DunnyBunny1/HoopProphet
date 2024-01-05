@@ -1,16 +1,18 @@
-# This is a sample Python script.
+# main.py
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+# Import functionalities from your src directory
+from src import scraper, data_management, mvp_predictor
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def main():
+    # Example: Call functions from your modules in src directory
+    data = scraper.scrape_basketball_reference()
+    processed_data = data_management.process_data(data)
+    predicted_mvp = mvp_predictor.predict_mvp(processed_data)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    # Display or use the predicted MVP
+    print(f"The predicted MVP is: {predicted_mvp}")
+
+
+if __name__ == "__main__":
+    main()
