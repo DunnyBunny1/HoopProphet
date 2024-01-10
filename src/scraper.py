@@ -8,15 +8,15 @@ base_url = 'https://www.basketball-reference.com/awards/awards_{}.html'
 
 def make_request(url):
     """
-       Make a GET request to the given URL with retries.
+    Make a GET request to the given URL with retries.
 
-       :param url: The URL to send the GET request to.
-       :return: Response object if successful.
-       :raises InvalidURL: If the URL is unknown.
-       :raises TooManyRedirects: If max retries are reached due to too many
-       redirects.
-       :raises RequestException: For unknown request errors.
-       """
+    :param url: The URL to send the GET request to.
+    :return: Response object if successful.
+    :raises InvalidURL: If the URL is unknown.
+    :raises TooManyRedirects: If max retries are reached due to too many
+    redirects.
+    :raises RequestException: For unknown request errors.
+    """
     retry_count = 3
     # Send a GET request to the URL
     while retry_count > 0:
@@ -81,9 +81,8 @@ def initialize_yearly_mvp_data(years):
                 # Save the html table into a file in our yearly_mvp_data folder
                 # Create the file with our new data
                 mvp_table_html = extract_table_from_page(year, response.text)
-                # Write a human-readable, string representation of the page's
-                # HTML for the mvp table
-                f.write(mvp_table_html.prettify())
+                # Write a string representation of the page's HTML for the mvp table
+                f.write(str(mvp_table_html))
         except FileExistsError:
             # If the file already exists, we can simply continue
             continue

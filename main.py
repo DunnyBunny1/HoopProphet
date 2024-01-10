@@ -10,7 +10,7 @@ years = [year for year in range(1991, 2023)]
 def main():
     # Example: Call functions from your modules in src directory
     scraper.scrape_basketball_reference(years)
-    processed_data = data_management.process_data()
+    processed_data = data_management.create_data_frame(years)
     predicted_mvp = mvp_predictor.predict_mvp(processed_data)
 
     # Display or use the predicted MVP
