@@ -1,2 +1,3 @@
-def process_data(mvp_voting_tables: dict):
-    table_1991 = mvp_voting_tables['1991']
+def process_data():
+    print('processing data... this has not been implemented yet')
+

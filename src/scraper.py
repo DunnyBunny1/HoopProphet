@@ -4,23 +4,19 @@ import requests
 from bs4 import BeautifulSoup
 
 base_url = 'https://www.basketball-reference.com/awards/awards_{}.html'
-"""
-years: A list of years (integers) for which MVP data needs to be 
-    scraped.
-"""
-years = [year for year in range(1991, 2023)]
-mvp_voting_tables = {}
+
 
 def make_request(url):
     """
-    Make a GET request to the given URL with retries.
+       Make a GET request to the given URL with retries.
 
-    :param url: The URL to send the GET request to.
-    :return: Response object if successful.
-    :raises  requests.exceptions.InvalidURL: If the URL is unknown.
-    :raises requests.exceptions.TooManyRedirects: If max retries are reached.
-    :raises requests.exceptions.RequestException: For unknown request errors.
-    """
+       :param url: The URL to send the GET request to.
+       :return: Response object if successful.
+       :raises InvalidURL: If the URL is unknown.
+       :raises TooManyRedirects: If max retries are reached due to too many
+       redirects.
+       :raises RequestException: For unknown request errors.
+       """
     retry_count = 3
     # Send a GET request to the URL
     while retry_count > 0:
@@ -42,18 +38,27 @@ def make_request(url):
         f'Reached maximum retries for url {url}.')
 
 
-def initialize_yearly_mvp_data():
+def initialize_yearly_mvp_data(years):
     """
-    Scrapes MVP data for each given year and saves it into HTML files
+    Downlaods MVP data for each given year and saves it into HTML files
 
-    This function iterates through the list of years provided, scrapes MVP
-    data from the corresponding URLs, and saves the data into HTML files in
-    the 'yearly_mvp_data' folder.
+    Iterates through the list of years provided, scrapes the
+    web page from the corresponding URL for that year, extracts the relevant
+    mvp table data from the page's HTML, and saves the mvp table data into HTML
+    files in the'yearly_mvp_data' folder.
     If the file for a particular year already exists, it skips that year's data.
 
+    :param years: List of years for which MVP data is to be downloaded.
+    :return: None
+    :raises RuntimeError: If encountering exceptions during URL request.
+
     Example:
-    >>> yrs = [2018, 2019, 2020]
-    >>> initialize_yearly_mvp_data(years)
+    ```
+    yrs = [2018, 2019, 2020]
+    initialize_yearly_mvp_data(yrs)
+    ```
+    After running the function, HTML files for each year (2018.html, 2019.html,
+    2020.html) will be created in the 'yearly_mvp_data' folder.
     """
     # Iterate through each year that we want to scrape MVP data for
     for year in years:
@@ -71,43 +76,43 @@ def initialize_yearly_mvp_data():
                         requests.exceptions.InvalidURL) as e:
                     raise RuntimeError(
                         f'Encountered {e} when making a URL request')
-                # Save the web page into a file in our yearly_mvp_data folder
+                # Strip the web page of unnecessary information, return the
+                # relevant mvp table for the given year
+                # Save the html table into a file in our yearly_mvp_data folder
                 # Create the file with our new data
-                f.write(response.text)
+                mvp_table_html = extract_table_from_page(year, response.text)
+                # Write a human-readable, string representation of the page's
+                # HTML for the mvp table
+                f.write(mvp_table_html.prettify())
         except FileExistsError:
             # If the file already exists, we can simply continue
             continue
 
 
-def get_yearly_mvp_voting_tables():
+def extract_table_from_page(year, page):
     """
-    Returns a mapping of years to the mvp voting table html from that year
+    Extracts the MVP table from the HTML page for a given year.
 
-    :return: a dictionary of year (str) : voting table (str)
+    :param year: The year for which the MVP table is being extracted.
+    :param page: HTML content of the web page.
+    :return: BeautifulSoup object containing the MVP table.
     """
-    # Initialize a dict to hold mvp voting tables
-    for year in years:
-        # If we have already initialzied the table, continue
-        if str(year) in mvp_voting_tables:
-            continue
-        file_path = 'src/yearly_mvp_data/{}.html'.format(year)
-        with open(file_path, 'r', encoding='utf-8') as f:
-            page = f.read()
-            soup = BeautifulSoup(page, 'html.parser')
-            # Remove the 0th table row - it contains unnecessary info for our
-            # data
-            soup.find('tr', class_='over_header').decompose()
-            # Extract the specific table containing MVP voting data
-            mvp_table = soup.find(id='mvp')
-            mvp_voting_tables[str(year)] = mvp_table
-    return mvp_voting_tables
+    soup = BeautifulSoup(page, 'html.parser')
+    # Remove the 0th table row - it contains unnecessary info for our data
+    soup.find('tr', class_='over_header').decompose()
+    # Extract the specific table containing MVP voting data
+    mvp_table = soup.find(id='mvp')
+    return mvp_table
 
 
-def scrape_basketball_reference():
+def scrape_basketball_reference(years):
     """
-    Scrapes basketball reference MVP data and returns voting tables.
+    Scrapes MVP data from basketball-reference.com and saves it into HTML files.
 
-    :return: A dictionary of year (str) : voting table (str)
+    This function initializes the process of scraping MVP data by calling
+    'initialize_yearly_mvp_data()' function.
+
+    :param years: List of years for which MVP data is to be scraped.
+    :return: None
     """
-    initialize_yearly_mvp_data()
-    return get_yearly_mvp_voting_tables()
+    initialize_yearly_mvp_data(years)
