@@ -1,3 +1,0 @@
-# Ignore Python cache and compiled python fiels
-__pycache__/
-*.pyc
