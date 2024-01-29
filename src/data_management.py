@@ -6,7 +6,9 @@ def load_yearly_mvp_data(year):
     Load MVP data from an HTML file for a specific year.
 
     :param year: Year for data loading.
-    :return: DataFrame with MVP data for the year.
+    :return a DataFrame formed by reading the scraped and downloaded HTML table
+    corresponding to the given year
+    :rtype pd.DataFrame
     :raises FileNotFoundError: If HTML file is not found.
     :raises ValueError: If no tables are in the HTML file.
     """
@@ -22,15 +24,17 @@ def load_yearly_mvp_data(year):
         raise ValueError(f"No table found in file for year {year}.")
 
 
-def create_data_frame(years):
+def create_yearly_mvp_csv(years):
     """
     Process and combine yearly MVP data from HTML files into a single DataFrame.
+    Write the dataframe to a CSV
 
     :param years: A list of years for which the MVP data needs to be processed.
     :type years: list of int
 
-    :return: A DataFrame containing the combined MVP data for all specified years.
-    :rtype: pd.DataFrame
+    :return: A dataframe formed by concatenatinging each yearly MVP dataframe.
+    Each yearly MVP dataframe is formed by reading the html table for the year
+    :rtype pd.DataFrame
 
     :raises FileNotFoundError: If an HTML file for a specified year is not found.
     :raises ValueError: If the HTML file does not contain any tables.
@@ -43,7 +47,11 @@ def create_data_frame(years):
         dataframe_list.append(curr_df)
     # Combine all yearly DataFrames into a single DataFrame
     mvp_df: pd.DataFrame = pd.concat(dataframe_list)
-    print(mvp_df)
     # Now we have one data frame with all mvp voting from 1991 - 2022
     # Store the data in csv format
     mvp_df.to_csv('src/mvp_voting_1991-2022.csv')
+    return mvp_df
+
+
+def create_full_dataframe():
+    pass
