@@ -1,8 +1,7 @@
 # main.py
 
 # Import functionalities from your src directory
-from src import data_management, mvp_predictor
-
+from src import scraping_tools, data_management, mvp_predictor
 
 #  A list of years (integers) for which MVP data needs to be  scraped.
 years = [year for year in range(1991, 2023)]

@@ -2,7 +2,7 @@ import time
 import requests
 
 
-def make_request(url):
+def make_http_req(url):
     """
     Make a GET request to the given URL with retries.
 
@@ -28,7 +28,6 @@ def make_request(url):
                 f'Error with status code {response.status_code}encountered')
         else:  # If we are here, we made a successful request
             return response
-
     # If we are here, we ran out of retries
     raise requests.exceptions.TooManyRedirects(
         f'Reached maximum retries for url {url}.')
