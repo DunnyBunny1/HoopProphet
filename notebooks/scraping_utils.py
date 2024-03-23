@@ -1,5 +1,6 @@
 import time
 import requests
+years = [year for year in range(1991, 2023)]
 
 def make_http_req(url):
     """
