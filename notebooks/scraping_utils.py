@@ -32,16 +32,3 @@ def make_http_req(url):
     raise requests.exceptions.TooManyRedirects(
         f'Reached maximum retries for url {url}.')
 
-
-def scrape_basketball_reference(years):
-    """
-    Scrapes MVP, player, and team data from basketball-reference.com and
-    saves it into HTML files.
-
-    :param years: List of years for which MVP data is to be scraped.
-    :return: None
-    """
-    # initialize_yearly_mvp_data(years)
-    # initialize_yearly_player_data(years)
-    # initialize_yearly_team_data(years)
-    pass
