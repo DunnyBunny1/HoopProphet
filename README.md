@@ -1,5 +1,9 @@
 # 🏀 HoopProphet
 **HoopProphet** is a Python app that uses machine learning to predict the NBA Most Valuable Player (MVP), using over 30 seasons of player, team, and MVP voting data and 800k+ data points. Sourcing data from [Basketball Reference](https://www.basketball-reference.com), this app scrapes, cleans, and merges large-scale NBA datasets, then trains regression models to estimate MVP voting shares—correctly identifying top contenders in the 2023 season.
+
+## Prediction Results: 
+![alt text](prediction_results.png)
+
 ## 📚 Table of Contents
 - [⚙️ Technical Overview](#️-technical-overview)
 - [🧠 Challenges Encountered](#-challenges-encountered)
