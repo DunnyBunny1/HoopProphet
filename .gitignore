@@ -1,5 +1,9 @@
-# virtual environment folder
+data/yearly_mvp_data/
+data/yearly_player_data/
+data/yearly_team_data/
+
 venv/
-# Python cache and compiled python files
+.ruff_cahce
+.env
 __pycache__/
 *.pyc

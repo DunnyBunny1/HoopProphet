@@ -20,9 +20,7 @@
 ## ⚙️ Technical Overview
 - Reverse-engineered the `BasketballReference`'s API to automate a web scraper using `BeautifulSoup` and `Selenium` 
 - Preprocessed raw HTML data into structured tabular format using `pandas`. Performed missing value cleaning, feature scaling, and aggregation to create an analytical dataset.
-- Loaded the merged dataset into a local `MongoDB` server for querying and analysis. 
 - Trained and evaluated multiple supervised regression machine learning models to predict the NBA MVP voting share % of each player, examining various error metrics like MSE and  ranking accuracy.
-	- Post-training ML models are serialized using Python's `pickle` module and stored as Binary Large Objects (BLOBs) in MongoDB. This allows the models to be saved to the database and later retrieved for inference or further analysis.
 - Tuned models via grid-search cross-validation and used dimensionality reduction (PCA, RFE) to reduce overfitting and improve generalization.
 ## 🧠 Challenges Encountered
 This project presented a number of unique data analysis and data science challenges. Working with over 30 seasons of NBA data meant dealing with messy, inconsistent datasets, missing values, and edge cases like players being traded mid-season. Addressing these issues required creative feature engineering, rigorous data cleaning, and applying domain-specific heuristics about sports performance 
@@ -41,24 +39,24 @@ This project presented a number of unique data analysis and data science challen
 	- This was resolved by explicitly using `utf-8` encoding when downloading and parsing scraped HTML.
 5. **Ethically Web Scraping**
 	- Initially, I encountered various `HTTP` errors while sending requests to `BasketballReference`'s web servers, in particular `TooManyRedirects` and `TooManyRequests` status codes
-	- To address this, I examined the site's `robots.txt` file to learn the policy on web scraping bots, and implemented crawler delays as necessary to comply with them.
+	- To address this, I examined the site's `robots.txt` file to learn the policy on web scraping bots, and implemented crawler delays as well as exponential backoff to comply with them.
 ## 🗂️ Project Structure
 This project uses a modular organization to separate out data collection, processing, and modeling
 ```
 HoopProphet-MVP-Predictor/
 │
-├── notebooks/
-│   ├── mvp_data_processor.ipynb           # For scraping and loading MVP voting data to MongoDB
-│   ├── player_data_processor.ipynb        # For scraping and loading player stats to MongoDB
-│   ├── team_data_processor.ipynb          # For scraping and loading team W/L stats to MongoDB
-│   ├── data_cleaning.ipynb                # For data cleaning and MongoDB collection management
-│   ├── model_training.ipynb               # For feature engineering and extraction, fitting/training models
-│   ├── model_evaluation.ipynb             # For evaluating the model's performance and model tuning
-│   └── scraping_utils.py                  # Contains shared logic for HTTP response handling
-│
-├── .env                                   # Environment variables
-├── requirements.txt                       # Python dependencies
-└── README.md                              # Project documentation
+├── notebooks
+│   ├── 01_player_data-processor.ipynb    # scraping and downloading individual player stats
+│   ├── 02_team_data_processor.ipynb    # scraping and downloading team W/L stats
+│   ├── 03_mvp_data_processor.ipynb    # scraping and downloading mvp voting shares
+│   ├── 04_data_cleaning.ipynb    # cleaning, pre-processing,and aggregating all our scraped data 
+│   ├── 05_machine_learning.ipynb    # feature engineering, model training, model evaluation, and model selection
+│   ├── nicknames.csv    # mapping of team abbreviations to the their team name
+│   └── scraping_utils.py    # shared logic for HTTP response handling
+├── prediction_results.png    # image displaying the prediction outcomes of our best model
+├── README.md
+├── requirements.txt    # python dependencies
+├── setup_chromedriver.py    # test script for ensuring chrome browser bot is working properly
 
 ```
 
@@ -89,19 +87,19 @@ source ./venv/bin/activate
 pip install -r requirements.txt
 ```
 ### Running the project 
-1. Start a MongoDB server running at `MONGODB_URI` in the `.env` file (can be locally-hosted or in the cloud)
- 2. Setup the `ChromeDriver` server for your system 
+1. Setup the `ChromeDriver` server for your system 
 ```bash
 python setup_chromedriver.py
 ```
 - This will download a `ChromeDriver` compatible with your Google Chrome version if one isn't already installed yet. On success, it will open a Google Chrome browser window to `Google.com` for 4 seconds and then close it
-3. To perform the web scraping and train the models, run each notebook in the `notebooks/` folder, in-order
-	1. `01_mvp_data_processor.ipynb`
-	2. `02_player_data_processor.ipynb`
-	3. `03_team_data_processor.ipynb`
-	4. ...
-4. You are now free to interact / modify the code as you wish! 
-5. Feel free to open a Pull Request if you have an idea for improvement or find a bug 
+2. To perform the web scraping and train the models, run each notebook in the `notebooks/` folder, in-order
+	1. `01_player_data-processor.ipynb`
+	2. `02_team_data_processor.ipynb`
+	3. `03_mvp_data_processor.ipynb`
+	4. `04_data_cleaning.ipynb`
+	5. ...
+3. You are now free to interact / modify the code as you wish! 
+4. Feel free to open a Pull Request if you have an idea for improvement or find a bug 
 ## 🧪 Testing Overview
 Testing was performed primarily through:
 - **Jupyter notebook outputs** to inspect intermediate results and validate transformations 
@@ -115,10 +113,9 @@ Testing was performed primarily through:
 ## Technologies & Resources Used 
 ### Languages & Libraries
 - `Python`, `pandas`, `scikit-learn`, `Selenium`, `BeautifulSoup`
-- `MongoDB` for local database storage
 ### Development Tools
 - `JupyterLab`, `VSCode`
 - `Git`, `GitHub` for version control
 ### Learning Resources
-- _Python Machine Learning_ by Raschka & Mirjalili
+- _Python Machine Learning_: Book by Raschka & Mirjalili
 - `DataQuest` - YouTube - walked through how to interact with NBA datasets from basketball reference using the `pandas` library in Python
